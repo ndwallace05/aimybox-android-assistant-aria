@@ -2,19 +2,19 @@ package com.justai.aimybox.assistant.handlers
 
 import android.content.Context
 import android.net.wifi.WifiManager
+import com.justai.aimybox.assistant.core.ActionDefinition
 import com.justai.aimybox.assistant.core.ActionHandler
 import com.justai.aimybox.assistant.core.ActionResult
 
 class LocalActionHandler(
     private val context: Context,
-    override val name: String,
-    override val description: String = ""
+    override val definition: ActionDefinition
 ) : ActionHandler {
 
     override suspend fun handle(parameters: Map<String, Any>): ActionResult {
-        return when (name) {
+        return when (definition.name) {
             "toggle_wifi" -> toggleWifi(parameters)
-            else -> ActionResult(false, "Unknown local action: $name")
+            else -> ActionResult(false, "Unknown local action: ${definition.name}")
         }
     }
 

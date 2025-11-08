@@ -13,20 +13,33 @@ import com.justai.aimybox.speechkit.yandex.cloud.Speed
 import com.justai.aimybox.speechkit.yandex.cloud.Voice
 import com.justai.aimybox.speechkit.yandex.cloud.YandexSpeechToText
 import com.justai.aimybox.speechkit.yandex.cloud.YandexTextToSpeech
+import com.justai.aimybox.assistant.core.ActionDefinition
 import com.justai.aimybox.assistant.core.ActionRegistry
 import com.justai.aimybox.assistant.core.EnhancedDialogApi
 import com.justai.aimybox.assistant.handlers.LocalActionHandler
+import dagger.hilt.android.HiltAndroidApp
 import java.util.UUID
+import javax.inject.Inject
 
+@HiltAndroidApp
 class AimyboxApplication : Application(), AimyboxProvider {
+
+    @Inject
+    lateinit var actionRegistry: ActionRegistry
 
     companion object {
         private const val YANDEX_TOKEN = BuildConfig.token
         private const val YANDEX_FOLDER_ID = BuildConfig.folderId
     }
 
-    val actionRegistry = ActionRegistry().apply {
-        register(LocalActionHandler(this@AimyboxApplication, "toggle_wifi", "Toggles Wi-Fi"))
+    override fun onCreate() {
+        super.onCreate()
+        actionRegistry.register(
+            LocalActionHandler(
+                this,
+                ActionDefinition("toggle_wifi", "Toggles Wi-Fi")
+            )
+        )
     }
 
     override val aimybox by lazy { createAimybox(this) }

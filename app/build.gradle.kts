@@ -4,13 +4,13 @@ import java.io.FileInputStream
 
 val kotlin_version: String by extra
 val aimyboxVersion: String by rootProject.extra
+val hiltVersion: String by rootProject.extra
 
 plugins {
     id("com.android.application")
     kotlin("android")
-}
-apply {
-    plugin("kotlin-android")
+    kotlin("kapt")
+    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -52,7 +52,6 @@ android {
         checkAllWarnings = true
         warningsAsErrors = false
     }
-    namespace = "com.justai.aimybox.assistant"
 }
 
 dependencies {
@@ -72,4 +71,6 @@ dependencies {
     implementation("com.just-ai.aimybox:core:$aimyboxVersion")
     implementation("com.just-ai.aimybox:yandex-speechkit:$aimyboxVersion")
 
+    implementation("com.google.dagger:hilt-android:$hiltVersion")
+    kapt("com.google.dagger:hilt-compiler:$hiltVersion")
 }
