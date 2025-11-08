@@ -53,7 +53,15 @@ class AimyboxApplication : Application(), AimyboxProvider {
             config = ttsConfig
         )
 
-        val unitId = UUID.randomUUID().toString()
+        val unitId = synchronized(this) {
+            val prefs = getSharedPreferences("aimybox_assistant", Context.MODE_PRIVATE)
+            var id = prefs.getString("unitId", null)
+            if (id == null) {
+                id = UUID.randomUUID().toString()
+                prefs.edit().putString("unitId", id).apply()
+            }
+            id
+        }
 
         val dialogApi = AimyboxDialogApi(
             apiKey = AIMYBOX_API_KEY,
