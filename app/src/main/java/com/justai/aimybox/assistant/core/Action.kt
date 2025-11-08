@@ -1,8 +1,7 @@
 package com.justai.aimybox.assistant.core
 
 interface ActionHandler {
-    val name: String
-    val description: String
+    val definition: ActionDefinition
 
     suspend fun handle(parameters: Map<String, Any>): ActionResult
 }

@@ -1,9 +1,11 @@
 buildscript {
     val kotlinVersion = "1.8.21"
     val aimyboxVersion = "0.17.6-alpha.2"
+    val hiltVersion = "2.44"
 
     extra.set("kotlinVersion", kotlinVersion)
     extra.set("aimyboxVersion", aimyboxVersion)
+    extra.set("hiltVersion", hiltVersion)
 
     repositories {
         mavenCentral()
@@ -13,6 +15,7 @@ buildscript {
     dependencies {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
         classpath("com.android.tools.build:gradle:7.1.3")
+        classpath("com.google.dagger:hilt-android-gradle-plugin:$hiltVersion")
     }
 
 }
