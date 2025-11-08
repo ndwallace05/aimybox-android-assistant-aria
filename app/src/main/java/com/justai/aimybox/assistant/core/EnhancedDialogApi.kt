@@ -22,10 +22,14 @@ class EnhancedDialogApi(
                 uxController.askForConfirmation(llmResponse.pendingAction)
             }
             llmResponse.hasToolCalls() -> {
-                val results = llmResponse.toolCalls.map { toolCall ->
+                val results = mutableListOf<ActionResult>()
+                for (toolCall in llmResponse.toolCalls) {
                     val handler = actionRegistry.getByName(toolCall.name)
-                        ?: return DialogResponse("Error: I don't know how to do that.")
-                    handler.handle(toolCall.parameters)
+                    if (handler == null) {
+                        results.add(ActionResult(false, "Error: I don't know how to do that."))
+                        continue
+                    }
+                    results.add(handler.handle(toolCall.parameters))
                 }
                 val summary = llmOrchestrator.summarizeResults(results)
                 contextManager.updateFromResults(results)

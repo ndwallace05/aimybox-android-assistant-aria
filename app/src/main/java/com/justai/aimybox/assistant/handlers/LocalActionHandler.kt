@@ -19,10 +19,20 @@ class LocalActionHandler(
     }
 
     private fun toggleWifi(parameters: Map<String, Any>): ActionResult {
-        val wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
-        val enabled = parameters["enabled"] as? Boolean ?: !wifiManager.isWifiEnabled
-        wifiManager.isWifiEnabled = enabled
-        val status = if (enabled) "enabled" else "disabled"
-        return ActionResult(true, "Wi-Fi has been $status")
+        val wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as? WifiManager
+            ?: return ActionResult(false, "Wi-Fi service is not available on this device.")
+
+        if (context.checkSelfPermission(android.Manifest.permission.CHANGE_WIFI_STATE) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            return ActionResult(false, "Permission to change Wi-Fi state is not granted.")
+        }
+
+        return try {
+            val enabled = parameters["enabled"] as? Boolean ?: !wifiManager.isWifiEnabled
+            wifiManager.isWifiEnabled = enabled
+            val status = if (enabled) "enabled" else "disabled"
+            ActionResult(true, "Wi-Fi has been $status")
+        } catch (e: SecurityException) {
+            ActionResult(false, "Failed to change Wi-Fi state due to a security exception.")
+        }
     }
 }
